@@ -38,12 +38,12 @@ def dpHorses(colors, stable_count):
             if i == 0:
                 dp[i][stable] = result().add(horse)
             elif stable == 0:
-                dp[i][stable] = dp[i-1][stable].add(colors[horse])
+                dp[i][stable] = dp[i-1][stable].add(horse)
             elif i == stable:
-                dp[i][stable] = result().add(colors[horse])
+                dp[i][stable] = result().add(horse)
             else:
-                a = dp[i-1][stable].add(colors[horse])
-                b = dp[i-1][stable-1].next(colors[horse])
+                a = dp[i-1][stable].add(horse)
+                b = dp[i-1][stable-1].next(horse)
                 dp[i][stable] = a if a.score() < b.score() else b
                 
     return dp[len(colors)-1][stable_count-1].score()
