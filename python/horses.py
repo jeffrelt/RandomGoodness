@@ -17,17 +17,20 @@ class result:
         self.color = [white,black]
     
     def add(self, horse):
+        ''' returns a copy with the added horse '''
         temp = result(self.so_far,self.color[0],self.color[1])
         temp.color[horse]+=1
         return temp
         
     def next(self, horse=None):
+        ''' returns a new result at the next stable with the sent horse '''
         temp = result(self.score())
         if horse != None:
             temp.color[horse]+=1
         return temp
             
     def score(self):
+        ''' just a getter for the total score '''
         return self.so_far + self.color[0]*self.color[1]
 
 def dpHorses(colors, stable_count):
@@ -59,6 +62,7 @@ def Horses(colors, stable_count):
     return min(a.score(), b.score())
 
 def recHorses(colors, stable_count, horse, stable):
+    # a little messy, but works - just here to show how the recursive version would work
     horse-=1
 
     if horse == 0:
@@ -78,5 +82,7 @@ def recHorses(colors, stable_count, horse, stable):
         return a
     else:
         return b
-    
-print( dpHorses([0,1,0,0,0,1,1,1,0],2))
+        
+if __name__ == '__main__':
+    # certainly needs more testing, but seems to work
+    print( dpHorses([0,1,0,0,0,1,1,1,0],2))
