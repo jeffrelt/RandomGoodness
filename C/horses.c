@@ -1,5 +1,5 @@
 //
-//  horses.c
+//  main.c
 //  horses
 //
 //  Created by Jeffrey Thompson on 2/8/16.
@@ -11,11 +11,11 @@
 #include <stdlib.h>
 
 
-//#define PREDEFINED_INPUT
-#define SAVE_DYNAMIC
+#define PREDEFINED_INPUT
+//#define SAVE_DYNAMIC
 
 #ifdef PREDEFINED_INPUT
-size_t horse_count = 8;
+size_t horse_count = 9;
 size_t stable_count = 2;
 char* horses = "010001110";
 #endif
@@ -45,8 +45,8 @@ void initResult(Result* put_here, const Result* copy_this){
     }
     else{
         put_here->so_far = 0;
-        put_here->color[WHITE] = WHITE;
-        put_here->color[BLACK] = BLACK;
+        put_here->color[WHITE] = 0;
+        put_here->color[BLACK] = 0;
     }
 }
 
