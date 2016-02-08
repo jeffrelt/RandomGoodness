@@ -1,3 +1,4 @@
+
 def permutations(A, K=None):
     ''' lexicographical ordered permutations generator 
         If K is given only permutations of length K are yielded
@@ -5,10 +6,12 @@ def permutations(A, K=None):
     '''
     if not K:
         yield tuple()
+        if K == 0:
+            return
     A = tuple(A) # in case we were given an iterator of some sort
-    build = [ [i] for i in reversed(range(len(A)))]
-    while build:
-        sofar = build.pop()
+    stack = [ [i] for i in reversed(range(len(A)))]
+    while stack:
+        sofar = stack.pop()
         if K == None:
             yield tuple(A[i] for i in sofar)
         elif len(sofar) == K:
@@ -17,7 +20,7 @@ def permutations(A, K=None):
         s = set(sofar)
         for i in reversed(range(len(A))):
             if i not in s:
-                build.append(sofar+[i])
+                stack.append(sofar+[i])
             
         
 
@@ -33,10 +36,12 @@ def combinations(A, K=None):
     
     if not K:
         yield tuple()
+        if K == 0:
+            return
     A = tuple(A) # in case we were given an iterator of some sort
-    build = [ (i, (x,)) for i,x in reversed_enumerate(A)]
-    while build:
-        last, sofar = build.pop()
+    stack = [ (i, (x,)) for i,x in reversed_enumerate(A)]
+    while stack:
+        last, sofar = stack.pop()
         if K == None:
             yield sofar
         elif len(sofar) == K:
@@ -44,7 +49,7 @@ def combinations(A, K=None):
             continue
         last+=1
         for i, x in reversed_enumerate(A[last:],last):
-            build.append( (i, sofar+(x,)) )
+            stack.append( (i, sofar+(x,)) )
         
 
 if __name__ == '__main__':
@@ -71,6 +76,11 @@ if __name__ == '__main__':
     r2 = sorted(sum((list(itertools.combinations(s,l))
              for l in range(len(s)+1)), []))
     check(r1,r2)
+    
+    r1 = sorted(sum((list(combinations(s,l))
+             for l in range(len(s)+1)), []))
+    check(r1,r2)
+    
     print("Testing permutations:")
     r1 = list(permutations(s,2))
     r2 = list(itertools.permutations(s,2))
@@ -82,5 +92,9 @@ if __name__ == '__main__':
     
     r1 = list(permutations(s))
     r2 = sorted(sum((list(itertools.permutations(s,l))
+             for l in range(len(s)+1)), []))
+    check(r1,r2)
+    
+    r1 = sorted(sum((list(permutations(s,l))
              for l in range(len(s)+1)), []))
     check(r1,r2)
