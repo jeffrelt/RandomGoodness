@@ -6,10 +6,8 @@
 //  Copyright © 2016 Jeffrey Thompson. All rights reserved.
 //
 
-#include <stdio.h>
-#include <stdlib.h>
-
-#define USE_RECURSION
+//#define USE_RECURSION
+#define USE_INTO
 
 struct node{
     int value;
@@ -26,6 +24,7 @@ Node* merge(Node* A, Node* B){
         if( A->value <= B->value ){
             walker->next = A;
             A = A->next;
+            
         }
         else{
             walker->next = B;
@@ -55,6 +54,26 @@ Node* mergeRec(Node* A, Node* B){
     return B;
 }
 
+Node* mergeInto(Node* A, Node* B){
+    Node anchor;
+    anchor.next = A;
+    A = &anchor;
+    while(A->next && B){
+        if(A->next->value <= B->value){
+            A=A->next;
+        }
+        else{
+            Node* hold = A->next;
+            A->next = B;
+            A = B;
+            B = hold;
+        }
+    }
+    if(B)
+        A->next = B;
+    return anchor.next;
+}
+
 
 int main(int argc, const char * argv[]) {
     // insert code here...
@@ -75,7 +94,11 @@ int main(int argc, const char * argv[]) {
 #ifdef USE_RECURSION
     Node* c = mergeRec(A,B);
 #else
+#ifdef USE_INTO
+    Node* c = mergeInto(A,B);
+#else
     Node* c = merge(A,B);
+#endif
 #endif
     while(c){
         printf("%i ",c->value);
