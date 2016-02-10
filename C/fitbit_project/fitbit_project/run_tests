@@ -1,0 +1,18 @@
+#!/bin/bash
+
+total = 0
+fail = 0
+make
+for d in test*/; do
+  for f in $d*.bin; do
+    echo testing $f
+    ./12bit $f | diff - ${f:0:${#f}-3}out
+    if [ $? != 0 ]; then 
+      echo $f failed!
+      let fail+=1
+    fi
+    let total+=1
+  done
+done  
+let 'pass = total-fail'
+echo $pass of $total tests passed!
