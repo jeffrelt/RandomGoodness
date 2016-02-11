@@ -18,7 +18,7 @@ const char* filename = FILENAME;
  I'll discuss here this code, overall design discussed in common.h
  
  Basically we open the .bin file (with checks) and read the data into a union
- three bytes at a time getting two 12 byte values then put them into our structures
+ three bytes at a time (two 12 byte values)then put them into our data structures
   
  I then deviated in the instructions as I made the second filename optional - if not
  included or we cannot open what was sent we output the results to stdout. I like to 
@@ -60,11 +60,12 @@ int main(int argc, const char * argv[]) {
 #endif
         // if we cannot open the file throw up errors and exit
     if( !file_handle ){
+            // the get the message for the errno
         perror(NULL);
         fprintf(stderr, "Could not open file %s for reading.",argv[1]);
         return -1;
     }
-        //we unpack into the structure backwards due to endianess to get the right order
+        //we unpack into the structure backwards (due to little endian) to get the right order
     int which = 2;
     data_t value;
         // Go until we find EOF
