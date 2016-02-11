@@ -4,10 +4,10 @@
 //  fitbit_project
 //
 //  Created by Jeffrey Thompson on 2/9/16.
-//  Copyright © 2016 Jeffrey Thompson. All rights reserved.
+//  Copyright 2016 Jeffrey Thompson. All rights reserved.
 //
-//  Script for generating tests
-//    produces both the .bin and .out files with random data
+//  Script for generating tests - I wanted to more thoroughly test my work.
+//  produces both the .bin and .out files with randomized data
 '''
 import sys, os, random
 
@@ -42,7 +42,7 @@ if not os.path.isdir(path):
         exit(-1)
 
 try:
-        # retry count
+        # tests count
     count = int(sys.argv[2]) if len(sys.argv) >= 3 else 1
     if count < 0:
         raise ValueError
@@ -62,6 +62,7 @@ while test_num < count:
     if os.path.exists(file_bin) or os.path.exists(file_out):
         file_id+=1
         continue
+    
         # randomize the results
     length = random.randrange(1000)
     value = random.randrange(MAX_VAL)
@@ -74,10 +75,11 @@ while test_num < count:
             # randomize and mask to ensure data is within range
         value = (value + random.randrange(-128,128)+trend) & MAX_VAL
             # adjust the trend every 16 values
-        if i^15:
+        if i^15 == 0:
             trend = random.randrange(-128,128)
         data.append(value)
 
+        # make the .bin file
     with open(file_bin, mode='wb') as fbin:
         packed = 0
         which = 0
@@ -96,8 +98,8 @@ while test_num < count:
             # in the odd length case we put just a nibble after the first value
         if which == 1:
             fbin.write(bytearray((packed>>16, packed>>8 & 255)))
-            
-            
+                
+        # make the .out file
     with open(file_out, mode='w') as fout:
             # very simple. Again not efficient, but we don't care here
         fout.write('--Sorted Max 32 Values--\n')

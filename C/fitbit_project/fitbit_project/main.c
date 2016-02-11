@@ -15,9 +15,15 @@ const char* filename = FILENAME;
 #endif
 
 /*
-  I'll discuss here this code, overall design discussed in common.h
-  
+ I'll discuss here this code, overall design discussed in common.h
  
+ Basically we open the .bin file (with checks) and read the data into a union
+ three bytes at a time getting two 12 byte values then put them into our structures
+  
+ I then deviated in the instructions as I made the second filename optional - if not
+ included or we cannot open what was sent we output the results to stdout. I like to 
+ do a test script where I pipe into diff without storing the file someplace which 
+ I did here as well in run_tests
 */
 
 int main(int argc, const char * argv[]) {
@@ -69,7 +75,7 @@ int main(int argc, const char * argv[]) {
         if(which < 0){
             which = 2;
                 // for the first, shift it down (pushing off the other value)
-            value.val = packed.whole >> 12;
+            value = packed.whole >> 12;
                 // put it in our structures
             pushQueue(q, value);
             pushHeap(h, value);
@@ -77,14 +83,14 @@ int main(int argc, const char * argv[]) {
             if(feof(file_handle))
                break;
                 // this one we use a mask to zero out the first vaue
-            value.val = packed.whole & (1<<12)-1;
+            value = packed.whole & (1<<12)-1;
             pushQueue(q, value);
             pushHeap(h, value);
         }
     }
         // close the file (we reuse the handle) and convert the heap into a reverse sorted array
     fclose(file_handle);
-    sortHeap(h);
+    
     
         // check if a second filename was passed
     if(argc >= 3){
@@ -101,18 +107,18 @@ int main(int argc, const char * argv[]) {
     
     fprintf(file_handle,"--Sorted Max 32 Values--\n");
     
-        // work through the heap array backwards
-    for(int i = DATASET-1; i >= DATASET - h->size; --i){
-        fprintf(file_handle, "%i\n", h->array[i].val);
+    sortHeap(h);
+        // walk through the now sorted array
+    for(unsigned int i = 0; i < h->size; ++i){
+        fprintf(file_handle, "%i\n", h->array[i]);
     }
     
     fprintf(file_handle,"--Last 32 Values--\n");
     
         // we can walk through the queue like it is a simple array
     for(unsigned int i=0; i < q->size; ++i){
-        fprintf(file_handle, "%i\n", getIndexQueue(q,i).val);
+        fprintf(file_handle, "%i\n", getIndexQueue(q,i));
     }
-    
         // and we're done!
     fclose(file_handle);
 #ifdef ON_HEAP

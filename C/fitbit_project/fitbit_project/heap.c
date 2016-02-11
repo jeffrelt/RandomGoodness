@@ -11,6 +11,7 @@
 void heap_down(heap_t* h);
 void heap_up(heap_t* h);
 void swap_heap(heap_t* h, unsigned int ia, unsigned int ib);
+void swap_data(data_t* a, data_t* b);
 
 heap_t* initHeap(heap_t* h){
     if(h == NULL)
@@ -27,7 +28,7 @@ void pushHeap(heap_t* h, data_t add_this){
         // if full we check if the value is higher than the min
         // then swap it in if so
     if(h->size == DATASET){
-        if(add_this.val > h->array[0].val)
+        if(add_this > h->array[0])
             swapHeap(h,add_this);
         return;
     }
@@ -54,7 +55,7 @@ data_t swapHeap(heap_t* h, data_t swap_this){
 }
 
 void sortHeap(heap_t* h){
-        // basicly pop everything off and put it at the back ending up in reverse order
+        // basicly pop everything off and put it at the back
     unsigned int target = DATASET-1;
         // pop until empty
     while(h->size){
@@ -63,25 +64,22 @@ void sortHeap(heap_t* h){
     }
         // recover our size
     h->size = DATASET - target - 1;
+    
+        // now lets put them in sorted order (reverse the array)
+    data_t* low = h->array;
+    data_t* high = low + (DATASET-1);
+    while( low < high ){
+        swap_data(low++,high--);
+    }
 }
 
 void reHeap(heap_t* h){
-        // if we are completely full no need to move things to the front,
-        // just up the size and heap_up like a push was done
-    if(h->size == DATASET){
-        h->size = 0;
-        while(h->size < DATASET){
-            ++h->size;
-            heap_up(h);
-        }
-    }
-        // otherwise we assume everything is at the back of the array after a sortHeap,
-        // so start at the element closest to the front so nothing gets overlaped
-    unsigned int target = DATASET - h->size;
-    h->size = 0;
-    while( target < DATASET){
-        pushHeap(h, h->array[target]);
-        ++target;
+        // put the size down to 1 and heap_up
+    unsigned int size = h->size;
+    h->size = 1;
+    for(unsigned int i = 1; i<size; ++i){
+        ++h->size;
+        heap_up(h);
     }
 }
 
@@ -94,6 +92,12 @@ void swap_heap(heap_t* h, unsigned int ia, unsigned int ib){
     h->array[ib] = hold;
 }
 
+void swap_data(data_t* a, data_t* b){
+    data_t hold = *b;
+    *b = *a;
+    *a = hold;
+}
+
 void heap_down(heap_t* h){
         // bubble down until we either get to the edge or we find the right place (after a pop)
     unsigned int target = 0;
@@ -102,10 +106,10 @@ void heap_down(heap_t* h){
         // it could be that the left child (child1) is within the boundry and the other is not
     while(child1 < h->size ){
             // if the right child is within bound check if it is the smaller child
-        if(child2 < h->size && h->array[child1].val > h->array[child2].val)
+        if(child2 < h->size && h->array[child1] > h->array[child2])
             child1 = child2; //swap if so
             // if order is good just stop
-        if( h->array[target].val < h->array[child1].val )
+        if( h->array[target] < h->array[child1] )
             break;
             //swap then find the next set of children to buble down to
         swap_heap(h,target,child1);
@@ -123,7 +127,7 @@ void heap_up(heap_t* h){
         // keep going until we reach the root
     while(target > 0){
             //if it looks good stop
-        if( h->array[target].val >= h->array[parent].val )
+        if( h->array[target] >= h->array[parent] )
             break;
             //else keep going
         swap_heap(h,target,parent);

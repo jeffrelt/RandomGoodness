@@ -15,51 +15,53 @@
 #include <stdlib.h>
 
 /*
-   The choice was obvious for me use a heap for the max 32 values and a queue for the last 32.
-   I had a lot of fun implimenting these as there are a lot of little optimizations that can be done. 
-   The choice of 32 samples to track I'm sure was no accident ;)
+ Project-wide Discussion (each .h file and main.c has it’s own mini discussion):
  
-   The only realy tradeoffs to be 
+ The choice was pretty clear to me to use a heap for the max 32 values and a circular
+ queue for the last 32. However, if we often need to access the sorted values a
+ balanced binary tree could be better choice. Walking the tree in sorted
+ order is an O(n) operation instead of O(n log) for sorting the heap, but trees are
+ a little more complicated to implement and more wasteful space wise. The queue on
+ the other-hand is a no brainer.
+ 
+ I played with the idea of creating a packed data format as every element in our
+ structures have a wasted nibble, but decided against it here for the following reasons:
+ - we have a total of 64 elements, so this adds up to only 32 bytes of wasted
+   space between the queue and heap.
+ - Accessing irregular offsets is highly inefficient. If this where infrequntly accessed
+   storage it may be worth the cost, but these are fairly high turnover data structures.
+ 
+ I made a switch (ON_HEAP) for putting the data structures on the heap (dynamic memory),
+ but as these are pretty compact data structures I cannot see a good reason to do so. 
+ I generally avoid the heap in embedded systems if I can help it.
+ 
+ I had a lot of fun implementing these as there are a lot of little optimizations
+ that can be done. The choice of 32 samples to track I'm sure was no accident.
+ 
+ As a side note, I converted the provided .out files to unix formatting and corrected a typo ;)
 */
+
 
 ////* user configurable switches */////
 
-// for debugging
+// for debugging it's nice to not have to type in EVERY run
 //#define SET_INPUT
 
 // for SET_INPUT
-// as a side note, I converted my .out files to unix formatting and corrected a typo ;)
-#define FILENAME "tests_provided/test3.bin"
+//
+#define FILENAME "/Users/apple/Documents/workspace/RandomGoodness/C/fitbit_project/fitbit_project/tests_provided/test1.bin"
 
 
 // My inclination is to avoid the heap in an embeded device so I'm leaving this off, but options are nice ;)
 //#define ON_HEAP
 
-// extended note below
-//#define USE_BIT_FIELDS
-
 // per the specs of the question this should be 32, and the way I did the queue it needs to be a power of 2
 #define DATASET 32
 
-////* Common stuff amongt the queue and heap */////
 
-#define MASKSET DATASET-1
-
-/*The struct is to allow the bit field. The idea is to reduce memory usage by 1/4, but at least my compiler is not
-  cooperating. The issue is accessing the odd indexes are rather innefficent so it decied to add padding in the array...
-  The only real way to do this would be to roll it manually. I could (and I have a though on how to do it fairly 
-  efficiently) but we are talking about a combined 32 bytes here betwen the heap and queue. There is a high probability
-  the added overhead to do the more complex accessing would outway any savings.
-*/
-struct data{
-#ifdef USE_BIT_FIELDS
-    unsigned short val:12;
-#else
-    unsigned short val;
-#endif
-};
-
-typedef struct data data_t;
+// This typedef is to allow the data type to be changed easily if we choose, although changing to a struct would require
+// additional work in the code to make it work...
+typedef unsigned short data_t;
 
 
 

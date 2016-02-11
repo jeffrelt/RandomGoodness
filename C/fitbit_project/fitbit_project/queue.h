@@ -11,10 +11,17 @@
 
 #include "common.h"
 
+// mask in place of modulo (set to 31 here)
+#define MASKSET DATASET-1
 
 /*
-Curcular array based Queue which silently overwrites the oldest values once full
-DATASET is assumed to be a power of 2 (allows a few nice optimizations)
+ Circular array based Queue which silently overwrites the oldest values once full.
+ DATASET (in common.h) is assumed to be a power of 2 as otherwise our mask method
+ of keeping within the array bounds would fail.
+ 
+ The choice of silently overwriting the oldest value is unusual for a queue, but
+ it simplifies flow here.
+ 
 */
 
 struct queue{
