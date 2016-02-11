@@ -19,10 +19,10 @@
  
  The choice was pretty clear to me to use a heap for the max 32 values and a circular
  queue for the last 32. However, if we often need to access the sorted values a
- balanced binary tree could be better choice. Walking the tree in sorted
- order is an O(n) operation instead of O(n log) for sorting the heap, but trees are
- a little more complicated to implement and more wasteful space wise. The queue on
- the other-hand is a no brainer.
+ balanced search tree could be better choice. Walking the tree in sorted
+ order is an O(n) operation instead of O(n log) for sorting the heap, but search trees 
+ are a little more complicated to implement and more wasteful space wise. The space 
+ advantage of the heap is becuase it's 'tree' is always complete.
  
  I played with the idea of creating a packed data format as every element in our
  structures have a wasted nibble, but decided against it here for the following reasons:

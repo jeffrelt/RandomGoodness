@@ -11,6 +11,7 @@
 '''
 import sys, os, random
 
+# seed that random generator
 random.seed()
 
 
@@ -64,7 +65,7 @@ while test_num < count:
         continue
     
         # randomize the results
-    length = random.randrange(1000)
+    length = random.randrange(200)
     value = random.randrange(MAX_VAL)
     trend = random.randrange(-128,128)  #this one is to provide peaks and valleys
     data = []

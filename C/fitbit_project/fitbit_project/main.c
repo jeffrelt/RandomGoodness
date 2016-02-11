@@ -46,7 +46,7 @@ int main(int argc, const char * argv[]) {
     initHeap(h);
 #endif
     
-        // hard coding during testing is nice...
+        // hard coding filename during testing is nice...
 #ifdef SET_INPUT
     FILE *file_handle = fopen(filename,"r");
 #else

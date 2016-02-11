@@ -32,7 +32,7 @@ void pushHeap(heap_t* h, data_t add_this){
             swapHeap(h,add_this);
         return;
     }
-        // othersize put it at the back and heapup
+        // otherwise put it at the back and heapup
     h->array[h->size++] = add_this;
     heap_up(h);
 }
@@ -47,7 +47,7 @@ data_t popHeap(heap_t* h){
 
 
 data_t swapHeap(heap_t* h, data_t swap_this){
-        // like popHeap then pushHeap, but is a little more efficient done at once
+        // like popHeap then pushHeap, but is a little more efficient done together
     data_t hold = h->array[0];
     h->array[0] = swap_this;
     heap_down(h);
@@ -56,32 +56,24 @@ data_t swapHeap(heap_t* h, data_t swap_this){
 
 void sortHeap(heap_t* h){
         // basicly pop everything off and put it at the back
-    unsigned int target = DATASET-1;
+    unsigned int size = h->size;
+    data_t* target = h->array+size-1;
         // pop until empty
     while(h->size){
-        h->array[target] = popHeap(h);
-        target-=1;
+        *target = popHeap(h);
+        --target;
     }
-        // recover our size
-    h->size = DATASET - target - 1;
+    h->size = size; // recover our size
     
         // now lets put them in sorted order (reverse the array)
-    data_t* low = h->array;
-    data_t* high = low + (DATASET-1);
-    while( low < high ){
-        swap_data(low++,high--);
+    data_t* high = target + size;
+    ++target;
+        // target now points to the first element of the array, high points to the last
+    while( target < high ){
+        swap_data(target++,high--);
     }
 }
 
-void reHeap(heap_t* h){
-        // put the size down to 1 and heap_up
-    unsigned int size = h->size;
-    h->size = 1;
-    for(unsigned int i = 1; i<size; ++i){
-        ++h->size;
-        heap_up(h);
-    }
-}
 
 
 ///// helper functions /////
