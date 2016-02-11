@@ -1,4 +1,11 @@
 #!/bin/bash
+#  run_tests
+#  fitbit_project
+#
+#  Created by Jeffrey Thompson on 2/9/16.
+#  Copyright 2016 Jeffrey Thompson. All rights reserved.
+
+# bash script automating testing of known input and output files
 
 make
 # find all directories that start with test
